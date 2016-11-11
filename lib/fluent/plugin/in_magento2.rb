@@ -141,36 +141,6 @@ class Fluent::Magento2Input < Fluent::Input
         router.emit("magento2", timestamp, item)
       end
 
-=begin
-      if !report[:data].has_key?(:rows)
-        raise "magento2: result doesn't contain rows."
-      end
-
-      if report[:data][:rows].empty?
-        raise "magento2: result has 0 rows."
-      end
-
-      dimensions = report[:column_header][:dimensions]
-      metrics = report[:column_header][:metric_header][:metric_header_entries].map{|m| m[:name]}
-      report[:data][:rows].each do |row|
-        dim = dimensions.zip(row[:dimensions]).to_h
-        met = metrics.zip(row[:metrics].first[:values]).to_h
-        ga_record = dim.merge(met)
-
-        now = DateTime.now
-        if @dims.split(",")[0] == 'ga:hour'
-          timestring = DateTime.new(now.year, now.month, now.day, dim['ga:hour'].to_i, 00, 00, now.offset)
-        else @dims.split(",")[0] == 'ga:day'
-          timestring = DateTime.new(now.year, now.month, dim['ga:day'].to_i, 00, 00, 00, now.offset)
-        end
-        ga_time = timestring.to_time.to_i
-        ga_record['@timestamp'] = timestring.strftime("%FT%T%:z")
-
-        log.debug "magento2: #{ga_record}"
-        router.emit("magento2", ga_time, ga_record)
-      end
-=end
-
     rescue => err
       log.fatal("magento2: caught exception; exiting")
       log.fatal(err)
